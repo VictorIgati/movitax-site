@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 
@@ -19,7 +18,6 @@ interface ContactEmailRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -27,7 +25,6 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { name, email, phone, service, message }: ContactEmailRequest = await req.json();
 
-    // Send email to the company
     const emailResponse = await resend.emails.send({
       from: "Movitax Website <onboarding@resend.dev>",
       to: ["movitaxconsultants@gmail.com"],
@@ -43,7 +40,6 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
-    // Send confirmation email to the client
     const confirmationResponse = await resend.emails.send({
       from: "Movitax Consultants <onboarding@resend.dev>",
       to: [email],
@@ -76,7 +72,7 @@ const handler = async (req: Request): Promise<Response> => {
         },
       }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in send-contact-email function:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
