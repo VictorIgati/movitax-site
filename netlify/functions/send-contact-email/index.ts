@@ -56,6 +56,10 @@ const handler: Handler = async (event, context) => {
     console.log('Emails sent successfully:', {
       company: emailResponse,
       confirmation: confirmationResponse,
+      company: emailResponse,
+      confirmation: confirmationResponse,
+      company: emailResponse,
+      confirmation: confirmationResponse,
     });
 
     return {
