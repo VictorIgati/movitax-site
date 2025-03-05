@@ -18,6 +18,7 @@ interface ContactEmailRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
+  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -25,6 +26,7 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { name, email, phone, service, message }: ContactEmailRequest = await req.json();
 
+    // Send email to the company
     const emailResponse = await resend.emails.send({
       from: "Movitax Website <onboarding@resend.dev>",
       to: ["movitaxconsultants@gmail.com"],
@@ -40,6 +42,7 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
+    // Send confirmation email to the client
     const confirmationResponse = await resend.emails.send({
       from: "Movitax Consultants <onboarding@resend.dev>",
       to: [email],
@@ -57,10 +60,15 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
-    console.log("Emails sent successfully:", { 
+    console.log("Emails sent successfully:", {
       company: emailResponse, 
-      confirmation: confirmationResponse 
+      confirmation: confirmationResponse,
+      confirmationEmailSent: confirmationResponse.status === 200 ? true : false,
     });
+
+    if (confirmationResponse.status !== 200) {
+      console.error("Confirmation email failed to send:", confirmationResponse);
+    }
 
     return new Response(
       JSON.stringify({ success: true }),
@@ -75,7 +83,7 @@ const handler = async (req: Request): Promise<Response> => {
   } catch (error: unknown) {
     console.error("Error in send-contact-email function:", error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: (error as Error).message }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },
