@@ -1,0 +1,133 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 20% 98%;
+    --foreground: 220 10% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 10% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 10% 20%;
+
+    --primary: 196 100% 47%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 20% 98%;
+    --secondary-foreground: 220 10% 20%;
+
+    --muted: 210 20% 92%;
+    --muted-foreground: 220 10% 40%;
+
+    --accent: 45 100% 59%;
+    --accent-foreground: 220 10% 20%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 10% 90%;
+    --input: 220 10% 90%;
+    --ring: 196 100% 47%;
+
+    --radius: 0.5rem;
+  }
+
+  * {
+    @apply border-border;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-card-gradient backdrop-blur-lg border border-white/20 shadow-lg;
+  }
+  
+  .nav-link {
+    @apply relative px-1 py-2 text-movitax-darkGray font-medium transition-colors duration-300 hover:text-movitax-blue;
+  }
+  
+  .nav-link::after {
+    @apply content-[''] absolute bottom-0 left-0 w-0 h-0.5 bg-movitax-blue transition-all duration-300;
+  }
+  
+  .nav-link:hover::after {
+    @apply w-full;
+  }
+  
+  .nav-link.active {
+    @apply text-movitax-blue;
+  }
+  
+  .nav-link.active::after {
+    @apply w-full;
+  }
+  
+  .reveal {
+    @apply opacity-0;
+  }
+  
+  .reveal-visible {
+    @apply animate-fade-in;
+  }
+  
+  .reveal-visible-right {
+    @apply animate-fade-in-right;
+  }
+  
+  .reveal-visible-left {
+    @apply animate-fade-in-left;
+  }
+  
+  .btn-primary {
+    @apply bg-movitax-blue text-white font-medium py-3 px-6 rounded-md transition-all duration-300 shadow-md hover:shadow-lg hover:translate-y-[-2px] active:translate-y-0 active:shadow-md;
+  }
+  
+  .btn-secondary {
+    @apply bg-white text-movitax-darkGray font-medium py-3 px-6 rounded-md border border-movitax-blue/20 transition-all duration-300 shadow-sm hover:shadow-md hover:translate-y-[-2px] hover:border-movitax-blue active:translate-y-0 active:shadow-sm;
+  }
+  
+  .section-title {
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold mb-4 text-movitax-darkGray;
+  }
+  
+  .section-subtitle {
+    @apply text-lg md:text-xl text-movitax-darkGray/70 max-w-2xl mx-auto mb-12;
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom Animations */
+.parallax-bg {
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* For Safari and other browsers that don't support backdrop-filter well */
+@supports not (backdrop-filter: blur(16px)) {
+  .glass-card {
+    background-color: rgba(255, 255, 255, 0.95);
+  }
+}
