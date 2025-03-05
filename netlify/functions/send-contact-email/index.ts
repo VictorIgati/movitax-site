@@ -19,6 +19,7 @@ const handler: Handler = async (event, context) => {
   try {
     const { name, email, phone, service, message } = JSON.parse(event.body);
 
+    // Send email to the company
     const emailResponse = await resend.emails.send({
       from: 'Movitax Website <onboarding@resend.dev>',
       to: ['movitaxconsultants@gmail.com'],
@@ -34,6 +35,7 @@ const handler: Handler = async (event, context) => {
       `,
     });
 
+    // Send confirmation email to the user
     const confirmationResponse = await resend.emails.send({
       from: 'Movitax Consultants <onboarding@resend.dev>',
       to: [email],
