@@ -4,6 +4,7 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+console.log('Email sending function triggered');
 const handler: Handler = async (event, context) => {
   if (event.httpMethod === 'OPTIONS') {
     return {
@@ -20,6 +21,7 @@ const handler: Handler = async (event, context) => {
     const { name, email, phone, service, message } = JSON.parse(event.body);
 
     // Send email to the company
+    console.log('Sending email to the company...');
     const emailResponse = await resend.emails.send({
       from: 'Movitax Website <onboarding@resend.dev>',
       to: ['movitaxconsultants@gmail.com'],
@@ -36,6 +38,7 @@ const handler: Handler = async (event, context) => {
     });
 
     // Send confirmation email to the user
+    console.log('Sending confirmation email to the user...');
     const confirmationResponse = await resend.emails.send({
       from: 'Movitax Consultants <onboarding@resend.dev>',
       to: [email],
@@ -54,6 +57,8 @@ const handler: Handler = async (event, context) => {
     });
 
     console.log('Emails sent successfully:', {
+      company: emailResponse,
+      confirmation: confirmationResponse,
       company: emailResponse,
       confirmation: confirmationResponse,
       company: emailResponse,
