@@ -6,6 +6,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 console.log('Email sending function triggered');
 const handler: Handler = async (event, context) => {
+  console.log('Function executed successfully!');
   if (event.httpMethod === 'OPTIONS') {
     return {
       statusCode: 200,

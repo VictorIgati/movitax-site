@@ -1,5 +1,5 @@
 // Netlify function to handle contact form submissions
-exports.handler = async (event) => {
+export default async function handler(event) {
   // Only allow POST requests
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
