@@ -55,51 +55,52 @@ const Contact = () => {
     };
   }, []);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+const handleSubmit = async (e: FormEvent) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+  
+  try {
+    // Store submission in Supabase database
+    const { error: dbError } = await supabase
+      .from('contact_submissions')
+      .insert([
+        { name, email, phone, service, message }
+      ]);
     
-    try {
-      // Store submission in Supabase database
-      const { error: dbError } = await supabase
-        .from('contact_submissions')
-        .insert([
-          { name, email, phone, service, message }
-        ]);
-      
-      if (dbError) throw new Error(dbError.message);
-      
-      // Send email using Supabase Edge Function
-      const response = await supabase.functions.invoke('send-contact-email', {
-        body: { name, email, phone, service, message }
-      });
-      
-      if (!response.error) {
-        toast({
-          title: "Message Sent",
-          description: "We've received your message and will contact you soon.",
-        });
-        
-        // Reset form fields
-        setName('');
-        setEmail('');
-        setPhone('');
-        setService('');
-        setMessage('');
-      } else {
-        throw new Error(response.error.message || "Failed to send email");
-      }
-    } catch (error) {
-      console.error("Form submission error:", error);
+    if (dbError) throw new Error(dbError.message);
+    
+    // Send email using Supabase Edge Function
+    const response = await supabase.functions.invoke('send-contact-email', {
+      body: { name, email, phone, service, message }
+    });
+    
+    if (!response.error) {
       toast({
-        title: "Error",
-        description: "There was a problem sending your message. Please try again.",
-        variant: "destructive",
+        title: "Message Sent",
+        description: "We've received your message and will contact you soon.",
       });
-    } finally {
-      setIsSubmitting(false);
+      
+      // Reset form fields
+      setName('');
+      setEmail('');
+      setPhone('');
+      setService('');
+      setMessage('');
+    } else {
+      throw new Error(response.error.message || "Failed to send email");
     }
-  };
+  } catch (error) {
+    console.error("Form submission error:", error);
+    toast({
+      title: "Error",
+      description: "There was a problem sending your message. Please try again.",
+      variant: "destructive",
+    });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   const handleMapClick = () => {
     window.open('https://maps.app.goo.gl/g7ygYNG6CJTsYu4JA', '_blank');
