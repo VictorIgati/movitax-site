@@ -55,10 +55,11 @@ const Contact = () => {
     };
   }, []);
 
+<<<<<<< Tabnine <<<<<<<
 const handleSubmit = async (e: FormEvent) => {
   e.preventDefault();
   setIsSubmitting(true);
-  
+
   try {
     // Store submission in Supabase database
     const { error: dbError } = await supabase
@@ -66,29 +67,66 @@ const handleSubmit = async (e: FormEvent) => {
       .insert([
         { name, email, phone, service, message }
       ]);
-    
+
     if (dbError) throw new Error(dbError.message);
-    
-    // Send email using Supabase Edge Function
-    const response = await supabase.functions.invoke('send-contact-email', {
-      body: { name, email, phone, service, message }
-    });
-    
-    if (!response.error) {
-      toast({
-        title: "Message Sent",
-        description: "We've received your message and will contact you soon.",
+
+    // Send email using Supabase Edge Function//-
+    const response = await supabase.functions.invoke('send-contact-email', {//-
+      body: { name, email, phone, service, message }//-
+    });//-
+    let emailSent = false;//+
+
+    if (!response.error) {//-
+      toast({//-
+        title: "Message Sent",//-
+        description: "We've received your message and will contact you soon.",//-
+    // Try Supabase Edge Function first//+
+    try {//+
+      const response = await supabase.functions.invoke('send-contact-email', {//+
+        body: { name, email, phone, service, message }//+
       });
-      
-      // Reset form fields
-      setName('');
-      setEmail('');
-      setPhone('');
-      setService('');
-      setMessage('');
-    } else {
-      throw new Error(response.error.message || "Failed to send email");
+
+      // Reset form fields//-
+      setName('');//-
+      setEmail('');//-
+      setPhone('');//-
+      setService('');//-
+      setMessage('');//-
+    } else {//-
+      throw new Error(response.error.message || "Failed to send email");//-
+      if (!response.error) {//+
+        emailSent = true;//+
+      }//+
+    } catch (edgeFunctionError) {//+
+      console.log("Supabase Edge Function failed, trying Netlify function...");//+
     }
+//+
+    // If Supabase Edge Function fails, try Netlify function//+
+    if (!emailSent) {//+
+      const netlifyResponse = await fetch('/.netlify/functions/send-contact-email', {//+
+        method: 'POST',//+
+        headers: {//+
+          'Content-Type': 'application/json',//+
+        },//+
+        body: JSON.stringify({ name, email, phone, service, message }),//+
+      });//+
+//+
+      if (!netlifyResponse.ok) {//+
+        throw new Error("Failed to send email via Netlify function");//+
+      }//+
+    }//+
+//+
+    toast({//+
+      title: "Message Sent",//+
+      description: "We've received your message and will contact you soon.",//+
+    });//+
+//+
+    // Reset form fields//+
+    setName('');//+
+    setEmail('');//+
+    setPhone('');//+
+    setService('');//+
+    setMessage('');//+
   } catch (error) {
     console.error("Form submission error:", error);
     toast({
@@ -100,6 +138,7 @@ const handleSubmit = async (e: FormEvent) => {
     setIsSubmitting(false);
   }
 };
+>>>>>>> Tabnine >>>>>>>// {"source":"chat"}
 
 
   const handleMapClick = () => {
